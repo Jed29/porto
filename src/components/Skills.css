@@ -1,0 +1,112 @@
+.skills-section {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 50%, var(--bg) 100%);
+  overflow: hidden;
+  padding-bottom: 140px;
+}
+
+.skills-header {
+  margin-bottom: 72px;
+}
+
+.skills-marquee-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.skills-row {
+  position: relative;
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.skills-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.skills-row-label {
+  position: absolute;
+  top: 50%;
+  left: 48px;
+  transform: translateY(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.skills-row::before,
+.skills-row::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 160px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.skills-row::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg2), transparent);
+}
+
+.skills-row::after {
+  right: 0;
+  background: linear-gradient(-90deg, var(--bg2), transparent);
+}
+
+.skills-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  will-change: transform;
+  width: max-content;
+}
+
+.skills-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 40px;
+  white-space: nowrap;
+}
+
+.skills-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.skills-item-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 600;
+  color: rgba(28,25,23,0.6);
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+  cursor: default;
+}
+
+.skills-item:hover .skills-item-text {
+  color: var(--row-color);
+}
+
+.skills-item:hover .skills-item-dot {
+  opacity: 1;
+  box-shadow: 0 0 10px var(--row-color);
+}
+
+@media (max-width: 768px) {
+  .skills-row-label { left: 24px; }
+  .skills-item { padding: 0 28px; gap: 10px; }
+  .skills-item-text { font-size: 22px; }
+  .skills-row::before,
+  .skills-row::after { width: 80px; }
+}
