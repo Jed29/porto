@@ -20,7 +20,7 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Image parallax + fade
+      // Image entrance
       gsap.fromTo(imageRef.current,
         { x: -80, opacity: 0 },
         {
@@ -34,6 +34,18 @@ export default function About() {
           }
         }
       )
+
+      // Photo parallax
+      gsap.to('.about-photo', {
+        yPercent: -12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        }
+      })
 
       // Content stagger
       gsap.fromTo(
@@ -79,20 +91,7 @@ export default function About() {
         {/* Image side */}
         <div ref={imageRef} className="about-image-wrap">
           <div className="about-image-frame">
-            <div className="about-avatar">
-              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="100" cy="100" r="100" fill="url(#avatar-grad)"/>
-                <circle cx="100" cy="80" r="35" fill="rgba(255,255,255,0.15)"/>
-                <ellipse cx="100" cy="160" rx="55" ry="40" fill="rgba(255,255,255,0.1)"/>
-                <defs>
-                  <radialGradient id="avatar-grad" cx="50%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor="#f97316"/>
-                    <stop offset="100%" stopColor="#7c2d12"/>
-                  </radialGradient>
-                </defs>
-              </svg>
-              <span className="avatar-initials">JA</span>
-            </div>
+            <img src="/jed.jpg" alt="Jed Abner" className="about-photo" />
           </div>
           <div className="about-image-badge">
             <span>✦</span> Based in Jakarta, Indonesia

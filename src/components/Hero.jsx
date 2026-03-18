@@ -36,6 +36,7 @@ export default function Hero() {
     const headline = headlineRef.current
     const lines = headline.querySelectorAll('.hero-line')
     lines.forEach(line => {
+      if (line.classList.contains('hero-line-accent')) return
       const text = line.textContent
       line.innerHTML = text.split('').map(char =>
         char === ' ' ? '<span class="hero-char"> </span>' : `<span class="hero-char">${char}</span>`
@@ -52,6 +53,12 @@ export default function Hero() {
         stagger: 0.015,
         ease: 'power4.out',
       }
+    )
+
+    tl.fromTo('.hero-line-accent',
+      { y: 80, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out' },
+      '<0.3'
     )
 
     tl.fromTo(subRef.current,
@@ -157,8 +164,8 @@ export default function Hero() {
         {/* Social links */}
         <div className="hero-socials">
           {[
-            { name: 'GitHub', href: 'https://github.com/imnotjeed', icon: <GithubIcon /> },
-            { name: 'LinkedIn', href: 'https://linkedin.com/in/jedabner', icon: <LinkedinIcon /> },
+            { name: 'GitHub', href: 'https://github.com/Jed29', icon: <GithubIcon /> },
+            { name: 'LinkedIn', href: 'https://www.linkedin.com/in/jeed/', icon: <LinkedinIcon /> },
           ].map(s => (
             <a key={s.name} href={s.href} className="social-link" target="_blank" rel="noreferrer" aria-label={s.name}>
               {s.icon}

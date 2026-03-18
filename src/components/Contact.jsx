@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import emailjs from '@emailjs/browser'
 import './Contact.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const EMAILJS_SERVICE_ID  = 'service_pd6k8sb'
+const EMAILJS_TEMPLATE_ID = 'template_kb5uwbz'
+const EMAILJS_PUBLIC_KEY  = 'u_vR7WLOnlxAA6XRB'
+
 export default function Contact() {
   const sectionRef = useRef(null)
   const formRef = useRef(null)
-  const [status, setStatus] = useState('idle') // idle | sending | sent
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -33,7 +38,14 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setStatus('sending')
-    setTimeout(() => setStatus('sent'), 1800)
+
+    emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY)
+      .then(() => {
+        setStatus('sent')
+      })
+      .catch(() => {
+        setStatus('error')
+      })
   }
 
   return (
@@ -43,7 +55,6 @@ export default function Contact() {
 
       <div className="container">
         <div className="contact-header">
-          <div className="eyebrow">Get In Touch</div>
           <h2 className="section-title">
             Let's <span className="highlight">Work Together</span>
           </h2>
@@ -116,21 +127,26 @@ export default function Contact() {
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Name</label>
-                    <input type="text" className="form-input" placeholder="John Doe" required />
+                    <input name="name" type="text" className="form-input" placeholder="John Doe" required />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Email</label>
-                    <input type="email" className="form-input" placeholder="john@example.com" required />
+                    <input name="email" type="email" className="form-input" placeholder="john@example.com" required />
                   </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Subject</label>
-                  <input type="text" className="form-input" placeholder="What's this about?" required />
+                  <input name="title" type="text" className="form-input" placeholder="What's this about?" required />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Message</label>
-                  <textarea className="form-input form-textarea" placeholder="Tell me about your project..." rows={5} required />
+                  <textarea name="message" className="form-input form-textarea" placeholder="Tell me about your project..." rows={5} required />
                 </div>
+                {status === 'error' && (
+                  <p style={{ color: '#ef4444', fontSize: '13px', textAlign: 'center' }}>
+                    Failed to send. Please try again or email directly.
+                  </p>
+                )}
                 <button
                   type="submit"
                   className={`btn btn-primary form-submit ${status === 'sending' ? 'loading' : ''}`}

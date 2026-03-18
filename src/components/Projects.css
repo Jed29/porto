@@ -44,12 +44,9 @@
   font-size: 64px;
   font-weight: 700;
   line-height: 1;
-  background: linear-gradient(135deg, #7c3aed, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #f97316;
   letter-spacing: -0.04em;
-  transition: color 0.3s;
+  transition: color 0.4s ease;
 }
 
 .counter-sep {
@@ -158,10 +155,11 @@
   opacity: 0.9;
 }
 
-.stack-logo[src="/sigma-logo.svg"] {
+.stack-logo.no-filter {
   filter: none;
   opacity: 1;
 }
+
 
 .stack-year {
   font-size: 12px;

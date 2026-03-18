@@ -59,7 +59,7 @@ const experiences = [
     color: '#fb923c',
     bg: 'linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%)',
     rainbow: 'linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #6366f1)',
-    logo: '/sigma-logo.svg',
+    logo: 'https://dev.sigma-tech.co.id/static/media/logo-sigma.1e3c0382.png',
     period: 'Sep 2022 – Mar 2023',
   },
   {
@@ -194,7 +194,7 @@ export default function Experience() {
                   <img
                     src={exp.logo}
                     alt={exp.company}
-                    className="stack-logo"
+                    className={`stack-logo${exp.noFilter ? ' no-filter' : ''}`}
                     onError={e => { e.target.style.display = 'none' }}
                   />
                   <span className="stack-year">{exp.period}</span>

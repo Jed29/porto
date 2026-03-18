@@ -106,23 +106,22 @@
 }
 
 .hero-line-accent {
-  background: linear-gradient(135deg, #f97316, #ea580c, #f59e0b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200%;
-  animation: gradient-shift 4s ease infinite;
+  color: #f97316;
+  animation: accent-bounce 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
+  display: inline-block;
+  cursor: default;
 }
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+@keyframes accent-bounce {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
 }
 
 .hero-char {
   display: inline-block;
   will-change: transform;
 }
+
 
 .hero-sub {
   font-size: clamp(16px, 2vw, 20px);
