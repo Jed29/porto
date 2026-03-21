@@ -14,7 +14,7 @@ export default function Footer() {
             <span className="logo-bracket">&lt;</span>JA<span className="logo-bracket">/&gt;</span>
           </a>
           <p className="footer-copy">
-            &copy; {year} Jed Abner. Crafted with passion &amp; coffee.
+            &copy; {year} Jed Abner. All rights reserved.
           </p>
         </div>
 

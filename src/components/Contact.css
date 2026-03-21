@@ -233,6 +233,70 @@ a.contact-card-value:hover { color: var(--accent); }
   line-height: 1.6;
 }
 
+/* ---- Plane Animation Overlay ---- */
+.plane-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.plane-group {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  transform-origin: center center;
+  will-change: transform;
+  filter: drop-shadow(0 8px 32px rgba(249,115,22,0.45)) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+.plane-svg {
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Banner trails behind the plane (to the left) */
+.plane-banner-wrap {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse; /* rope closest to plane, text farthest */
+  gap: 0;
+}
+
+.plane-rope {
+  flex-shrink: 0;
+  animation: rope-wave 0.6s ease-in-out infinite alternate;
+  transform-origin: right center;
+}
+
+@keyframes rope-wave {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(-1); }
+}
+
+.plane-banner-text {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(249,115,22,0.5);
+  animation: banner-flutter 0.4s ease-in-out infinite alternate;
+  transform-origin: right center;
+}
+
+@keyframes banner-flutter {
+  from { transform: skewY(-1deg) scaleY(0.97); }
+  to   { transform: skewY(1.5deg) scaleY(1.03); }
+}
+
 @media (max-width: 900px) {
   .contact-layout { grid-template-columns: 1fr; }
 }

@@ -270,14 +270,34 @@
 @media (max-width: 900px) {
   .projects-pin {
     grid-template-columns: 1fr;
-    padding: 80px 24px 40px;
-    min-height: auto;
-    gap: 40px;
+    padding: 40px 20px 20px;
+    min-height: 100dvh;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .proj-left .eyebrow { margin-bottom: 8px; }
+  .proj-left .section-title { margin-bottom: 10px; }
+
+  .proj-desc {
+    font-size: 13px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .proj-counter {
+    margin-bottom: 8px;
+  }
+
+  .proj-progress-track {
+    margin-bottom: 14px;
   }
 
   .proj-stack {
-    height: 420px;
+    height: calc(100dvh - 380px);
+    min-height: 300px;
   }
 
-  .counter-current { font-size: 48px; }
+  .counter-current { font-size: 44px; }
+  .counter-sep, .counter-total { font-size: 22px; }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './About.css'
@@ -13,14 +13,17 @@ const stats = [
 ]
 
 export default function About() {
-  const sectionRef = useRef(null)
-  const imageRef = useRef(null)
-  const contentRef = useRef(null)
-  const statsRef = useRef(null)
+  const sectionRef  = useRef(null)
+  const imageRef    = useRef(null)
+  const contentRef  = useRef(null)
+  const statsRef    = useRef(null)
+  const cvPaperRef  = useRef(null)
+  const cvWrapRef   = useRef(null)
+
+  const [cvOpen, setCvOpen] = useState(false)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Image entrance
       gsap.fromTo(imageRef.current,
         { x: -80, opacity: 0 },
         {
@@ -35,7 +38,6 @@ export default function About() {
         }
       )
 
-      // Photo parallax
       gsap.to('.about-photo', {
         yPercent: -12,
         ease: 'none',
@@ -47,7 +49,6 @@ export default function About() {
         }
       })
 
-      // Content stagger
       gsap.fromTo(
         contentRef.current.querySelectorAll('.anim'),
         { y: 50, opacity: 0 },
@@ -63,7 +64,6 @@ export default function About() {
         }
       )
 
-      // Stats count up
       const statEls = statsRef.current.querySelectorAll('.stat-value')
       statEls.forEach((el, i) => {
         gsap.fromTo(el,
@@ -85,6 +85,70 @@ export default function About() {
     return () => ctx.revert()
   }, [])
 
+  const handleDownload = (e) => {
+    e.preventDefault()
+
+    // 1. Close popup immediately
+    setCvOpen(false)
+
+    const el = cvPaperRef.current
+    if (!el) return
+
+    const rect = el.getBoundingClientRect()
+    const startX = rect.left + rect.width / 2
+    const startY = rect.top + rect.height / 2
+
+    // Target: top-right corner (browser download area)
+    const deltaX = window.innerWidth - 60 - startX
+    const deltaY = 60 - startY
+
+    // Stop CSS animations so GSAP has full control
+    el.style.animation = 'none'
+    const cvWidget = el.closest('.cv-widget')
+    if (cvWidget) cvWidget.style.animation = 'none'
+
+    gsap.killTweensOf(el)
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Trigger download after animation
+        const a = document.createElement('a')
+        a.href = '/JedsCv2k26.pdf'
+        a.download = 'JedAbner_CV.pdf'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+
+        // Restore CSS animations & reset transforms
+        gsap.set(el, { clearProps: 'all' })
+        el.style.animation = ''
+        if (cvWidget) cvWidget.style.animation = ''
+      }
+    })
+
+    // Grabbed — scale up + tilt
+    tl.to(el, { scale: 1.4, rotate: -20, duration: 0.25, ease: 'back.out(2)' })
+
+    // Bounce hops
+    .to(el, { y: -35, duration: 0.2,  ease: 'power2.out' })
+    .to(el, { y: 0,   duration: 0.18, ease: 'bounce.out' })
+    .to(el, { y: -22, duration: 0.16, ease: 'power2.out' })
+    .to(el, { y: 0,   duration: 0.14, ease: 'bounce.out' })
+    .to(el, { y: -12, duration: 0.12, ease: 'power2.out' })
+    .to(el, { y: 0,   duration: 0.1,  ease: 'bounce.out' })
+
+    // Fly to top-right corner
+    .to(el, {
+      x: deltaX,
+      y: deltaY,
+      scale: 0.15,
+      rotate: 25,
+      opacity: 0,
+      duration: 0.7,
+      ease: 'power3.in',
+    })
+  }
+
   return (
     <section id="about" ref={sectionRef} className="section about-section">
       <div className="container about-grid">
@@ -97,6 +161,52 @@ export default function About() {
             <span>✦</span> Based in Jakarta, Indonesia
           </div>
           <div className="about-image-deco" />
+
+          {/* CV Download Widget */}
+          <div
+            ref={cvWrapRef}
+            className={`cv-widget-wrap ${cvOpen ? 'cv-open' : ''}`}
+            onMouseEnter={() => setCvOpen(true)}
+            onMouseLeave={() => setCvOpen(false)}
+          >
+            {/* Backdrop untuk close saat tap di luar (mobile) */}
+            {cvOpen && (
+              <div
+                className="cv-backdrop"
+                onClick={() => setCvOpen(false)}
+              />
+            )}
+
+            <div className="cv-preview-popup">
+              <div className="cv-preview-header">
+                <span>Jed Abner — CV</span>
+                <div className="cv-preview-actions">
+                  <button className="cv-preview-dl" onClick={handleDownload}>
+                    ↓ Download
+                  </button>
+                  <button className="cv-preview-close" onClick={() => setCvOpen(false)}>
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <iframe
+                src="/JedsCv2k26.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+                className="cv-preview-iframe"
+                title="CV Preview"
+              />
+            </div>
+
+            <div className="cv-widget" onClick={() => setCvOpen(v => !v)}>
+              <div ref={cvPaperRef} className="cv-paper">
+                <div className="cv-paper-fold" />
+                <div className="cv-paper-lines">
+                  <span /><span /><span /><span /><span />
+                </div>
+                <div className="cv-paper-label">CV</div>
+              </div>
+              <span className="cv-widget-text">{cvOpen ? 'Close' : 'View CV'}</span>
+            </div>
+          </div>
         </div>
 
         {/* Content side */}
@@ -109,7 +219,7 @@ export default function About() {
             I'm a Front End Developer with 4+ years of experience building scalable web applications for banking, media, and enterprise clients. I specialize in translating Figma designs into pixel-perfect, maintainable UIs using React, TypeScript, and Atomic Design principles.
           </p>
           <p className="about-text anim">
-            Currently a Software Engineer at PT. Victoria Alife Indonesia, where I lead frontend development for an enterprise insurance management system using Angular and NestJS.
+            Currently a Software Engineer at PT. Victoria Alife Indonesia, working as a fullstack developer on an enterprise insurance management system using Angular and NestJS.
           </p>
 
           <div className="about-tags anim">

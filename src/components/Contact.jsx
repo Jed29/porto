@@ -13,7 +13,9 @@ const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 export default function Contact() {
   const sectionRef = useRef(null)
   const formRef = useRef(null)
+  const submitBtnRef = useRef(null)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [showPlane, setShowPlane] = useState(false)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -42,6 +44,7 @@ export default function Contact() {
     emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY)
       .then(() => {
         setStatus('sent')
+        setShowPlane(true)
       })
       .catch(() => {
         setStatus('error')
@@ -50,6 +53,7 @@ export default function Contact() {
 
   return (
     <section id="contact" ref={sectionRef} className="section contact-section">
+      {showPlane && <PlaneAnimation originRef={submitBtnRef} onComplete={() => setShowPlane(false)} />}
       {/* BG glow */}
       <div className="contact-glow" />
 
@@ -148,6 +152,7 @@ export default function Contact() {
                   </p>
                 )}
                 <button
+                  ref={submitBtnRef}
                   type="submit"
                   className={`btn btn-primary form-submit ${status === 'sending' ? 'loading' : ''}`}
                   disabled={status === 'sending'}
@@ -172,6 +177,121 @@ export default function Contact() {
         </div>
       </div>
     </section>
+  )
+}
+
+function PlaneAnimation({ onComplete, originRef }) {
+  const wrapRef = useRef(null)
+
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    // Default start: bottom-left
+    let startX = -320
+    let startY = vh * 0.72
+
+    // If we have the button's position, start from there
+    if (originRef?.current) {
+      const rect = originRef.current.getBoundingClientRect()
+      // Position near the right side of the button (where the icon is)
+      startX = rect.left + rect.width * 0.75
+      startY = rect.top + rect.height / 2
+    }
+
+    // Start tiny — looks like the button icon lifting off
+    gsap.set(el, {
+      x: startX,
+      y: startY,
+      scale: 0.06,
+      rotate: -22,
+      opacity: 1,
+      transformOrigin: 'right center',
+    })
+
+    const tl = gsap.timeline({ onComplete })
+
+    // Phase 0 — micro rev-up: jitter on the spot (engine warming up)
+    tl.to(el, {
+      x: startX - 4,
+      y: startY - 6,
+      scale: 0.07,
+      rotate: -28,
+      duration: 0.12,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: 3,
+    })
+    // Phase 1 — takeoff + approach: grow big flying toward viewer
+    .to(el, {
+      x: vw * 0.3,
+      y: vh * 0.22,
+      scale: 2.6,
+      rotate: -12,
+      duration: 1.5,
+      ease: 'power3.inOut',
+    })
+    // Phase 2 — slight wobble at closest point (turbulence)
+    .to(el, {
+      y: vh * 0.17,
+      duration: 0.15,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: 3,
+    })
+    // Phase 3 — fly past, exit top-right, shrink
+    .to(el, {
+      x: vw + 400,
+      y: vh * 0.02,
+      scale: 0.2,
+      rotate: -4,
+      duration: 1.2,
+      ease: 'power2.in',
+    })
+
+    return () => tl.kill()
+  }, [])
+
+  return (
+    <div className="plane-overlay" aria-hidden="true">
+      <div ref={wrapRef} className="plane-group">
+        {/* Banner trails BEHIND (to the left of) the plane */}
+        <div className="plane-banner-wrap">
+          <span className="plane-banner-text">✉ Message Sent!</span>
+          <svg className="plane-rope" width="90" height="14" viewBox="0 0 90 14" fill="none">
+            <path
+              d="M0 7 Q22 2 45 7 Q68 12 90 7"
+              stroke="rgba(255,255,255,0.6)"
+              strokeWidth="1.5"
+              fill="none"
+              strokeDasharray="4 3"
+            />
+          </svg>
+        </div>
+
+        {/* Airplane SVG — faces right */}
+        <svg className="plane-svg" width="160" height="80" viewBox="0 0 160 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="82" cy="40" rx="62" ry="12" fill="white"/>
+          <path d="M144 40 L130 33 L130 47 Z" fill="#e2e8f0"/>
+          <path d="M90 40 L115 8 L60 34 Z" fill="white" opacity="0.95"/>
+          <path d="M90 40 L115 72 L60 46 Z" fill="white" opacity="0.85"/>
+          <path d="M22 40 L12 14 L32 40 Z" fill="white"/>
+          <path d="M28 38 L44 26 L44 38 Z" fill="white" opacity="0.9"/>
+          <path d="M28 42 L44 54 L44 42 Z" fill="white" opacity="0.9"/>
+          <circle cx="110" cy="36" r="4" fill="rgba(100,200,255,0.6)"/>
+          <circle cx="97" cy="36" r="4" fill="rgba(100,200,255,0.6)"/>
+          <circle cx="84" cy="36" r="4" fill="rgba(100,200,255,0.6)"/>
+          <circle cx="71" cy="36" r="4" fill="rgba(100,200,255,0.6)"/>
+          <circle cx="58" cy="36" r="4" fill="rgba(100,200,255,0.6)"/>
+          <ellipse cx="87" cy="52" rx="16" ry="6" fill="#94a3b8"/>
+          <ellipse cx="87" cy="52" rx="10" ry="4" fill="#64748b"/>
+          <rect x="20" y="37" width="110" height="4" rx="2" fill="rgba(249,115,22,0.5)"/>
+        </svg>
+      </div>
+    </div>
   )
 }
 
